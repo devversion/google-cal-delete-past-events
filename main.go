@@ -22,7 +22,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	evsCall := cal.Events.List(CALENDAR_ID)
+	evsCall := cal.Events.List(CALENDAR_ID).SingleEvents(true).TimeMax(time.Now().Format(time.RFC3339)).MaxResults(2500)
 	res, err := evsCall.Do()
 	if err != nil {
 		fmt.Printf("Could not fetch calendar events: %v", err)
@@ -47,7 +47,7 @@ func main() {
 
 	for _, e := range pastEvents {
 		if err := cal.Events.Delete(CALENDAR_ID, e.Id).Do(); err != nil {
-			fmt.Printf("Could not delete past event: %s: %v\n", e.Summary, err)
+			fmt.Printf("Could not delete past event: %s - %s: %v\n", e.Summary, e.End.DateTime, err)
 			continue
 		}
 		fmt.Printf("Deleted past event: %s\n", e.Summary)
